@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Production builds
+dist/
+dist-electron/
+release/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS/IDE specific
+.DS_Store
+.vscode/
+.idea/
+*.local
+
+# Environment variables
+.env
