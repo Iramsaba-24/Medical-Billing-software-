@@ -26,6 +26,15 @@ const DashboardPage = () => {
             </Typography>
           </Paper>
         </Grid>
+
+         <Grid size={{xs:12, md:4}}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 240 }}>
+            <Typography variant="h6">Total Products</Typography>
+            <Typography component="p" variant="h4">
+              400
+            </Typography>
+          </Paper>
+        </Grid>
       </Grid>
     </Box>
   );

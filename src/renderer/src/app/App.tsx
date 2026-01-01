@@ -1,6 +1,7 @@
+import { authRoutes } from '@/routes/AuthenticationRoutes';
+import { mainRoutes } from '@/routes/MainRoutes';
 import { useEffect } from 'react';
-import Layout from '../containers/layout/Header'; 
-import DashboardPage from '../view/dashboardPages/DashboardPage';
+import { useRoutes } from 'react-router-dom';
 
 function App() {
  useEffect(() => {
@@ -12,11 +13,8 @@ function App() {
     }
   }, [])
   
-  return (
-    <Layout>
-      <DashboardPage />
-    </Layout>
-  );
+  const routes = useRoutes([...authRoutes, ...mainRoutes]);
+  return routes;
 }
 
 export default App;

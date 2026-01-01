@@ -39,6 +39,7 @@ const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
+  background: "#737373",
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
@@ -47,6 +48,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
+    background:"#bdbdbd",
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -55,6 +57,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
+    
   },
 });
 
@@ -63,7 +66,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -74,6 +76,7 @@ interface AppBarProps extends MuiAppBarProps {
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
+  background:"#bdbdbd",
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
@@ -93,6 +96,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   ({ theme, open }) => ({
     width: drawerWidth,
     flexShrink: 0,
+    
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
     ...(open && {
@@ -127,7 +131,7 @@ const menuItems = [
     path: '/invoices',
   },
   {
-    text: 'Sales',
+    text: 'Sales/Billing ',
     icon: <ShoppingCartIcon />,
     path: '/sales',
   },
@@ -200,9 +204,9 @@ const menuItems = [
 
 const MiniDrawer: React.FC<LayoutProps> = ({ children }) => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true); // Start with sidebar open
+  const [open, setOpen] = React.useState(true); 
 
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate(); 
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -238,10 +242,10 @@ const MiniDrawer: React.FC<LayoutProps> = ({ children }) => {
       </AppBar>
       
       {/* Sidebar (Drawer) */}
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={open} >
         <DrawerHeader>
-            <Typography variant="subtitle1" sx={{ mr: 2, opacity: open ? 1 : 0 }}>
-                Marg ERP
+            <Typography variant="subtitle1" sx={{ mr: 2, opacity: open ? 1 : 0, color:'#ffffff' }}>
+                ERP Billing Software
             </Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
@@ -252,13 +256,14 @@ const MiniDrawer: React.FC<LayoutProps> = ({ children }) => {
         {/* Main Menu Items */}
         <List>
           {menuItems.slice(0, 1).map((item) => ( // Dashboard
-            <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
+            <ListItem key={item.text} disablePadding sx={{ display: 'block',  }}>
               <ListItemButton
                 onClick={() => navigate(item.path)}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
+                  color:"#ffffff"
                 }}
               >
                 <ListItemIcon
@@ -266,6 +271,7 @@ const MiniDrawer: React.FC<LayoutProps> = ({ children }) => {
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
+                    color:'#ffffff'
                   }}
                 >
                   {item.icon}

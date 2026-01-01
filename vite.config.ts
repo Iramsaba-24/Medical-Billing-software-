@@ -24,6 +24,11 @@ export default defineConfig({
         : {},
     }),
   ],
+     resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/renderer/src'),
+    }
+  },
    server: {
     port: 7000,
     open: true,
