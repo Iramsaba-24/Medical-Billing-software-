@@ -2,7 +2,8 @@ export const URL_PATH = {
   LOGIN: '/login',
   REGISTER: '/register',
 
-  DASHBOARD: '/',
+  Landing: '/',
+  DASHBOARD: '/dashboard',
 
   SalesBilling: '/sales-billing',
 
