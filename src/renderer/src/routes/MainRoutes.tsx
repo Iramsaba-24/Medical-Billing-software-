@@ -4,6 +4,7 @@ import { URL_PATH } from '@/constants/UrlPath';
 import Invoices from '@/view/Invoices'
 import CreateInvoice from '@/containers/Invoices/CreateInvoice';
 import InvoiceView from '@/containers/Invoices/InvoiceView';
+import Landing from '@/containers/landing-page/LandingPage';
 
 export const mainRoutes: RouteObject[] = [
   {
@@ -11,7 +12,7 @@ export const mainRoutes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <Invoices />,
+        element: <Landing />,
       },
       {
         path: URL_PATH.Invoices,
