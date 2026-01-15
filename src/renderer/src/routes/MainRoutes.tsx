@@ -6,6 +6,7 @@ import CreateInvoice from '@/containers/Invoices/CreateInvoice';
 import InvoiceView from '@/containers/Invoices/InvoiceView';
 import DistributorsTable from '@/containers/Distributors/DistributorsTable';
 import AddForm from '@/containers/Distributors/AddForm';
+import Landing from '@/containers/landing-page/LandingPage';
 
 export const mainRoutes: RouteObject[] = [
   {
