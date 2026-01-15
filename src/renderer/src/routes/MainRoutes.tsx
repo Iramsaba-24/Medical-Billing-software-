@@ -4,6 +4,10 @@ import { URL_PATH } from '@/constants/UrlPath';
 import Invoices from '@/view/Invoices'
 import CreateInvoice from '@/containers/Invoices/CreateInvoice';
 import InvoiceView from '@/containers/Invoices/InvoiceView';
+import AddForm from '@/containers/distributors/AddForm';
+import DistributorsTable from '@/containers/distributors/DistributorsTable';
+
+
 
 export const mainRoutes: RouteObject[] = [
   {
@@ -24,6 +28,14 @@ export const mainRoutes: RouteObject[] = [
       {
         path: `${URL_PATH.InvoiceView}/:invoiceNo`,
         element: <InvoiceView />,
+      },
+      {
+        path: URL_PATH.AddForm ,
+        element: <AddForm />,
+      },
+      {
+        path: URL_PATH.DistributorsTable,
+          element: <DistributorsTable />,
       },
     ],
   },

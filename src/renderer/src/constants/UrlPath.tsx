@@ -7,8 +7,11 @@ export const URL_PATH = {
   SalesBilling: '/sales-billing',
 
   Invoices: '/invoice',
+
+  AddForm:'/form',
   CreateInvoice: '/create-invoice',
-  InvoiceView: '/invoice-view'
+  InvoiceView: '/invoice-view',
+  DistributorsTable: '/table',
 
 
 };
