@@ -10,7 +10,6 @@ import MedicineGroup from '@/containers/inventory/MedicineGroup';
 import MedicineGroupView from '@/containers/inventory/MedicineGroupView';
 import AddMedicineGroup from '@/containers/inventory/AddMedicineGroup';
 import AddInventoryItem from '@/containers/inventory/AddInventoryItem';
-import Landing from '@/containers/landing-page/LandingPage';
 
 export const mainRoutes: RouteObject[] = [
   {
