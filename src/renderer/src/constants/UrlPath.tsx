@@ -3,7 +3,7 @@ export const URL_PATH = {
   REGISTER: '/register',
 
   Landing: '/',
-  DASHBOARD: '/dashboard',
+  Dashboard: '/dashboard',
   Customer:'/customers',
 
   SalesBilling: '/sales-billing',

@@ -13,7 +13,9 @@ import AddInventoryItem from '@/containers/inventory/AddInventoryItem';
 import DistributorsTable from '@/containers/Distributors/DistributorsTable';
 import AddForm from '@/containers/Distributors/AddForm';
 import Landing from '@/containers/landing-page/LandingPage';
-
+import Dashboard from '@/view/Dashboard';
+import CustomerMaster from '@/view/CustomerMaster';
+ 
 export const mainRoutes: RouteObject[] = [
   {
     element: <Layout />,
@@ -22,9 +24,15 @@ export const mainRoutes: RouteObject[] = [
         index: true,
         element: <Landing />,
       },
+      {path: URL_PATH.Dashboard, 
+        element: <Dashboard />},
       {
         path: URL_PATH.Invoices,
         element: <Invoices />,
+      },
+      {
+        path: URL_PATH.Customer,
+        element: <CustomerMaster />,
       },
       {
         path: URL_PATH.CreateInvoice,
@@ -66,7 +74,8 @@ export const mainRoutes: RouteObject[] = [
         path: URL_PATH.AddForm,
         element: <AddForm />,
       },
-      
+     
     ],
   },
 ];
+ 
