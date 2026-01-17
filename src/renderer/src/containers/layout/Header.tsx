@@ -35,8 +35,6 @@ import { URL_PATH } from '../../constants/UrlPath';
 const MINI_WIDTH = 80;
 const FULL_WIDTH = 240;
 
-/* --STYLED -- */
-
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: '#238878',
   zIndex: theme.zIndex.drawer + 1,
@@ -63,7 +61,7 @@ const SearchBox = styled(Box)(({ theme }) => ({
 const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   { text: 'Customers', icon: <PeopleIcon />, path: '/customers' },
-  { text: 'Distributors', icon: <LocalShippingIcon />, path: '/salesBilling' },
+  { text: 'Distributors', icon: <LocalShippingIcon />, path: URL_PATH.DistributorsTable},
   { text: 'Inventory', icon: <Inventory2Icon />, path: URL_PATH.Inventory },
   { text: 'Sales & Purchase', icon: <AccountBalanceIcon />, path: '/accounting' },
   {

@@ -22,23 +22,15 @@ import { useMemo, useState, type ReactNode } from "react";
 import { IconTrashX } from "@tabler/icons-react";
 import ExportIcons from "@/utils/ExportIcons";
 import { iconMap } from "@/utils/Icons";
-
-export const ACTION_KEY = "actionbutton" as const;
-
+ 
 export type Column<T> = {
   key: keyof T | typeof ACTION_KEY;
   label: string;
   render?: (row: T) => ReactNode;
   exportable?: boolean;
 };
-
-export type DropdownOption = {
-  value: string;
-  label: string;
-  bgColor?: string;
-  textColor?: string;
-};
-
+ 
+export type DropdownOption = { value: string; label: string };
 export type FooterRow = {
   content: Array<{ value: ReactNode; colSpan?: number }>;
 };
@@ -69,15 +61,10 @@ interface UniversalTableProps<T extends Record<string, unknown>>
   dropdown?: {
     key: keyof T;
     options: readonly DropdownOption[];
-    onChange?: (row: T, value: T[keyof T]) => void;
-    disabled?: boolean | ((row: T) => boolean);
-    width?: number;
-    sx?: SxProps;
+    getValue: (row: T) => string;
+    onChange: (row: T, value: string) => void;
   };
-
-  autoUpdateDropdown?: boolean;
-  onDataChange?: (rows: T[]) => void;
-
+ 
   actions?: Partial<Record<keyof typeof iconMap, (row: T) => void>>;
   footerRows?: readonly FooterRow[];
 }
@@ -128,45 +115,18 @@ export function UniversalTable<T extends Record<string, unknown>>({
 
   const resolveRowId = (row: T, index: number) =>
     getRowId ? getRowId(row, index) : index;
-
-  const highlightText = (text: string | number | null | undefined): ReactNode =>
-    !search || text == null
-      ? text
-      : text
-          .toString()
-          .split(new RegExp(`(${search})`, "gi"))
-          .map((part, i) =>
-            i % 2 ? (
-              <mark key={i} style={{ background: highlightColor }}>
-                {part}
-              </mark>
-            ) : (
-              part
-            )
-          );
-
-  const DEFAULT_DROPDOWN_SX: SxProps = {
-    width: 150,
-    bgcolor: "#1f2937",
-    color: "#ffffff",
-    fontWeight: 600,
-    fontSize: 13,
-    borderRadius: 2,
-    "& .MuiSelect-icon": { color: "#a9a2a2ff" },
-  };
-
+ 
   const filteredData = useMemo(() => {
     if (!search) return data;
-
     return data.filter((row) =>
-      columns.some((col) => {
-        if (col.key === ACTION_KEY) return false;
-
-        const value = row[col.key];
-        return String(value ?? "")
-          .toLowerCase()
-          .includes(search.toLowerCase());
-      })
+      columns.some(
+        (col) =>
+          col.key !== "actionsbuttons" &&
+          col.key !== "dropdown" &&
+          String(row[col.key as keyof T] ?? "")
+            .toLowerCase()
+            .includes(search.toLowerCase())
+      )
     );
   }, [data, columns, search]);
 
@@ -188,17 +148,15 @@ export function UniversalTable<T extends Record<string, unknown>>({
         .map((c) => ({ key: c.label, label: c.label })),
     [columns]
   );
-
-  const selectedRows = data.filter((_, i) =>
-    selectedIds.has(resolveRowId(_, i))
+ 
+  const selectedRows = data.filter((r, i) =>
+    selectedIds.has(resolveRowId(r, i))
   );
 
   const toggleRow = (row: T, index: number) => {
     const id = resolveRowId(row, index);
     const updated = new Set(selectedIds);
-
     updated.has(id) ? updated.delete(id) : updated.add(id);
-
     setSelectedIds(updated);
     onSelectionChange?.(data.filter((r, i) => updated.has(resolveRowId(r, i))));
   };
@@ -209,19 +167,7 @@ export function UniversalTable<T extends Record<string, unknown>>({
     setSelectedIds(updated);
     onSelectionChange?.(checked ? [...data] : []);
   };
-
-  const updateRow = (row: T, patch: Partial<T>) => {
-    if (!onDataChange) return;
-
-    const targetId = resolveRowId(row, -1);
-
-    onDataChange(
-      data.map((r, i) =>
-        resolveRowId(r, i) === targetId ? { ...r, ...patch } : r
-      )
-    );
-  };
-
+ 
   return (
     <Paper sx={{ borderRadius: 3, boxShadow: 4, ...paperSx }}>
       {(showSearch || showExport) && (
@@ -261,7 +207,6 @@ export function UniversalTable<T extends Record<string, unknown>>({
           )}
         </Box>
       )}
-
       {caption && (
         <Box
           sx={{
@@ -278,8 +223,8 @@ export function UniversalTable<T extends Record<string, unknown>>({
           {caption}
         </Box>
       )}
-
-      <TableContainer>
+ 
+      <TableContainer sx={{ position: "relative" }}>
         <Table size={tableSize}>
           <TableHead>
             <TableRow>
@@ -297,8 +242,8 @@ export function UniversalTable<T extends Record<string, unknown>>({
                   />
                 </TableCell>
               )}
-
-              {columns.map((col) => (
+ 
+              {columns.map((c) => (
                 <TableCell
                   key={String(col.key)}
                   align={textAlign}
@@ -325,7 +270,6 @@ export function UniversalTable<T extends Record<string, unknown>>({
             ) : (
               paginatedData.map((row, index) => {
                 const rowId = resolveRowId(row, index);
-
                 return (
                   <TableRow
                     key={rowId}
@@ -340,86 +284,48 @@ export function UniversalTable<T extends Record<string, unknown>>({
                         />
                       </TableCell>
                     )}
-
-                    {columns.map((col) => {
-                      /* Dropdown */
-                      if (
-                        dropdown &&
-                        col.key === dropdown.key &&
-                        col.key !== ACTION_KEY
-                      ) {
-                        return (
-                          <TableCell key={String(col.key)} align={textAlign}>
-                            <Select
-                              size="small"
-                              value={row[col.key] as string}
-                              sx={{
-                                ...DEFAULT_DROPDOWN_SX,
-                                bgcolor: DEFAULT_DROPDOWN_SX.bgcolor as string,
-                                color: DEFAULT_DROPDOWN_SX.color as string,
-                                width:
-                                  dropdown.width ??
-                                  (DEFAULT_DROPDOWN_SX.width as number),
-                                ...dropdown.sx,
-                              }}
-                              onChange={(e) => {
-                                const value = e.target.value as T[keyof T];
-                                dropdown.onChange?.(row, value);
-                                if (!dropdown.onChange && autoUpdateDropdown) {
-                                  updateRow(row, {
-                                    [dropdown.key]: value,
-                                  } as Partial<T>);
-                                }
-                              }}
-                            >
-                              {dropdown.options.map((o) => (
-                                <MenuItem key={o.value} value={o.value}>
-                                  {o.label}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </TableCell>
-                        );
-                      }
-
-                      /* Actions */
-                      if (col.key === ACTION_KEY && actions) {
-                        return (
-                          <TableCell key={ACTION_KEY}>
-                            <Box display="flex" gap={1}>
-                              {Object.entries(iconMap).map(([k, cfg]) =>
-                                actions[k as keyof typeof iconMap] ? (
-                                  <Tooltip key={k} title={cfg.label}>
-                                    <IconButton
-                                      size="small"
-                                      onClick={() =>
-                                        actions[k as keyof typeof iconMap]?.(
-                                          row
-                                        )
-                                      }
-                                      sx={{ color: cfg.color }}
-                                    >
-                                      {cfg.icon}
-                                    </IconButton>
-                                  </Tooltip>
-                                ) : null
-                              )}
-                            </Box>
-                          </TableCell>
-                        );
-                      }
-
-                      /* Default */
-                      if (col.key === ACTION_KEY) return null;
-
-                      return (
-                        <TableCell key={String(col.key)} align={textAlign}>
-                          {col.render
-                            ? col.render(row)
-                            : highlightText(String(row[col.key] ?? ""))}
-                        </TableCell>
-                      );
-                    })}
+ 
+                    {columns.map((col) => (
+                      <TableCell key={String(col.key)} align={textAlign}>
+                        {col.key === "dropdown" && dropdown ? (
+                          <Select
+                            size="small"
+                            value={dropdown.getValue(row)}
+                            onChange={(e) =>
+                              dropdown.onChange(row, e.target.value)
+                            }
+                          >
+                            {dropdown.options.map((o) => (
+                              <MenuItem key={o.value} value={o.value}>
+                                {o.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        ) : col.key === "actionsbuttons" && actions ? (
+                          <Box display="flex" gap={1}>
+                            {Object.entries(iconMap).map(([k, cfg]) =>
+                              actions[k as keyof typeof iconMap] ? (
+                                <Tooltip key={k} title={cfg.label}>
+                                  <IconButton
+                                    size="small"
+                                    onClick={() =>
+                                      actions[k as keyof typeof iconMap]?.(row)
+                                    }
+                                    sx={{ color: cfg.color }}
+                                  >
+                                    {cfg.icon}
+                                  </IconButton>
+                                </Tooltip>
+                              ) : null
+                            )}
+                          </Box>
+                        ) : col.render ? (
+                          col.render(row)
+                        ) : (
+                          String(row[col.key as keyof T] ?? "")
+                        )}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 );
               })
@@ -441,7 +347,6 @@ export function UniversalTable<T extends Record<string, unknown>>({
           )}
         </Table>
       </TableContainer>
-
       <Box
         sx={{
           display: "flex",
@@ -473,7 +378,8 @@ export function UniversalTable<T extends Record<string, unknown>>({
             </IconButton>
           </Tooltip>
         )}
-
+ 
+        {/* PAGINATION */}
         <TablePagination
           component="div"
           count={filteredData.length}
@@ -486,3 +392,5 @@ export function UniversalTable<T extends Record<string, unknown>>({
     </Paper>
   );
 }
+ 
+ 

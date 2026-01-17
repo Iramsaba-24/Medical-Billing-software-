@@ -13,7 +13,6 @@ import AddInventoryItem from '@/containers/inventory/AddInventoryItem';
 import DistributorsTable from '@/containers/Distributors/DistributorsTable';
 import AddForm from '@/containers/Distributors/AddForm';
 import Landing from '@/containers/landing-page/LandingPage';
-import CustomerMaster from '@/view/CustomerMaster';
 
 export const mainRoutes: RouteObject[] = [
   {
@@ -26,10 +25,6 @@ export const mainRoutes: RouteObject[] = [
       {
         path: URL_PATH.Invoices,
         element: <Invoices />,
-      },
-      {
-        path: URL_PATH.Customer,
-        element: <CustomerMaster />,
       },
       {
         path: URL_PATH.CreateInvoice,
